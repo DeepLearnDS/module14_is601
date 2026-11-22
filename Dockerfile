@@ -24,8 +24,14 @@ RUN groupadd -r appgroup && \
 
 # Install application dependencies
 COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -r requirements.txt && \python -m pip install --no-cache-dir --upgrade "setuptools>=78.1.1" && \
+RUN python -m pip install --no-cache-dir -r requirements.txt && \
+    python -m pip install --no-cache-dir --upgrade setuptools==84.2.1 && \
     python -m pip check
+
+# Remove pip and its bundled metadata from the final image
+RUN rm -rf /usr/local/lib/python3.11/site-packages/pip \
+    /usr/local/lib/python3.11/site-packages/pip-*.dist-info \
+    /usr/local/bin/pip*
 
 # Copy application code
 COPY . .
