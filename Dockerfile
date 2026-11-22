@@ -24,7 +24,7 @@ RUN groupadd -r appgroup && \
 
 # Install application dependencies
 COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -r requirements.txt && \
+RUN python -m pip install --no-cache-dir -r requirements.txt && \python -m pip install --no-cache-dir --upgrade "setuptools>=78.1.1" && \
     python -m pip check
 
 # Copy application code
