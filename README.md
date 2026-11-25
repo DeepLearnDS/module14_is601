@@ -1,264 +1,199 @@
-# 📦 Project Setup
+# Module 14: Complete BREAD Functionality for Calculations
 
----
+## Project Overview
 
-# 🧩 1. Install Homebrew (Mac Only)
+This project implements BREAD functionality (Browse, Read, Edit, Add, Delete) for calculations using FastAPI, SQLAlchemy, PostgreSQL, and a web-based front end.
 
-> Skip this step if you're on Windows.
+Users can create calculations, view their calculation history, retrieve individual calculation details, update existing calculations, and delete calculations. The application uses authentication to ensure users can access only their own calculation records.
 
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
+The project also includes automated testing with Pytest and Playwright, Docker containerization, and GitHub Actions for continuous integration.
 
-**Install Homebrew:**
+## Technologies Used
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+- Python 3.11
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Pydantic
+- HTML, CSS, and JavaScript
+- Jinja2 Templates
+- Pytest
+- Playwright
+- Docker and Docker Compose
+- GitHub Actions
+- Trivy security scanning
 
-**Verify Homebrew:**
+## BREAD Functionality
 
-```bash
-brew --version
-```
+The application implements the following calculation operations:
 
-If you see a version number, you're good to go.
+| Operation | HTTP Method | Endpoint | Description |
+|---|---|---|---|
+| Browse | GET | `/calculations` | Retrieves calculations belonging to the authenticated user |
+| Read | GET | `/calculations/{id}` | Retrieves an individual calculation |
+| Edit | PUT | `/calculations/{id}` | Updates an existing calculation |
+| Add | POST | `/calculations` | Creates a new calculation |
+| Delete | DELETE | `/calculations/{id}` | Deletes a calculation |
 
----
+### Front-End Functionality
 
-# 🧩 2. Install and Configure Git
+The web interface allows authenticated users to:
 
-## Install Git
+- Add calculations by selecting an operation and entering numeric operands.
+- Browse their saved calculation history.
+- View individual calculation details.
+- Edit existing calculations.
+- Delete calculations.
+- Receive validation and error feedback when submitting invalid information.
 
-- **MacOS (using Homebrew)**
+Supported calculation operations include:
 
-```bash
-brew install git
-```
+- Addition
+- Subtraction
+- Multiplication
+- Division
 
-- **Windows**
+The application uses authentication and user-specific database queries to protect calculation records.
 
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
+## Project Setup and Installation
 
-**Verify Git:**
-
-```bash
-git --version
-```
-
----
-
-## Configure Git Globals
-
-Set your name and email so Git tracks your commits properly:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
-```
-
-Confirm the settings:
-
-```bash
-git config --list
-```
-
----
-
-## Generate SSH Keys and Connect to GitHub
-
-> Only do this once per machine.
-
-1. Generate a new SSH key:
+### 1. Clone the Repository
 
 ```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
+git clone https://github.com/DeepLearnDS/module14_is601.git
+cd module14_is601
 ```
 
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
----
-
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
-
-```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
+### 2. Create and Activate a Virtual Environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
+source venv/bin/activate
 ```
 
-### Install Required Packages
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+### 4. Configure Environment Variables
 
-# 🐳 5. (Optional) Docker Setup
+Configure the required environment variables for the database connection, authentication, and application settings.
 
-> Skip if Docker isn't used in this module.
+Use the project's environment example file if provided. Do not commit passwords, secret keys, or other sensitive credentials.
 
-## Install Docker
+## Running the Application with Docker
 
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+Docker Compose is used to run the application and its supporting services.
 
-## Build Docker Image
-
-```bash
-docker build -t <image-name> .
-```
-
-## Run Docker Container
+Build and start the containers:
 
 ```bash
-docker run -it --rm <image-name>
+docker compose up -d --build
 ```
 
----
-
-# 🚀 6. Running the Project
-
-- **Without Docker**:
+Check the running containers:
 
 ```bash
-python main.py
+docker compose ps
 ```
 
-(or update this if the main script is different.)
-
-- **With Docker**:
+View application logs:
 
 ```bash
-docker run -it --rm <image-name>
+docker compose logs -f web
 ```
 
----
+Open the application in a browser:
 
-# 📝 7. Submission Instructions
+- Application: http://localhost:8000
+- pgAdmin: http://localhost:5050
 
-After finishing your work:
+The PostgreSQL database runs as a Docker Compose service.
+
+To stop the containers:
 
 ```bash
-git add .
-git commit -m "Complete Module X"
-git push origin main
+docker compose down
 ```
 
-Then submit the GitHub repository link as instructed.
+This command stops and removes the containers while preserving the named database volume.
 
----
+## Running Tests Locally
 
-# 🔥 Useful Commands Cheat Sheet
+Activate the virtual environment and run:
 
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
+```bash
+python -m pytest -v
+```
 
----
+To run tests with coverage:
 
-# 📋 Notes
+```bash
+python -m pytest --cov=app --cov-report=term-missing
+```
 
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
+The test suite covers application functionality, database operations, authentication, and API behavior.
 
----
+Playwright is used for end-to-end browser testing.
 
-# 📎 Quick Links
+If the Playwright browser has not been installed:
 
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+```bash
+python -m playwright install chromium
+```
+
+## GitHub Actions and Continuous Integration
+
+The project includes GitHub Actions workflows to automate testing and build verification.
+
+The workflows support:
+
+- Installing project dependencies.
+- Running automated tests.
+- Building the Docker image.
+- Performing container security scanning with Trivy.
+
+GitHub Repository:
+
+https://github.com/DeepLearnDS/module14_is601
+
+Docker Hub:
+https://hub.docker.com/r/codeec/601_module14
+
+## Docker Hub Deployment
+
+Docker Hub is used to publish the application image.
+
+Docker Hub Repository:
+
+[Insert your Docker Hub repository URL here]
+
+The published image can be used to deploy the application in a Docker environment.
+
+## Security
+
+Security measures implemented in the project include:
+
+- Authenticated access to calculation endpoints.
+- User-specific calculation retrieval and ownership checks.
+- Input validation using Pydantic.
+- Container execution using a non-root application user.
+- Updated Python dependencies.
+- Operating-system package updates.
+- Trivy container vulnerability scanning.
+
+## Assignment Deliverables
+
+The project submission includes:
+
+1. GitHub repository containing the application source code, calculation models, BREAD endpoints, tests, and GitHub Actions workflows.
+2. Screenshots showing a successful GitHub Actions workflow.
+3. Screenshot demonstrating the Docker image published to Docker Hub.
+4. Front-end screenshots demonstrating BREAD functionality.
+5. A reflection document describing development experiences, challenges, and solutions.
+
+## Conclusion
+
+This project demonstrates the implementation of complete BREAD functionality for user-specific calculations. It combines backend API development, front-end functionality, database integration, automated testing, Docker deployment, and CI/CD practices.
